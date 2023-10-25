@@ -86,15 +86,15 @@ Vector3D Vector3D::operator*(double const &v1) const {
   return result;
 }
 
-Vector3D norm(Vector3D &v1) {
+double norm(Vector3D &v1) {
   double Magnitude = 0;
   Vector3D result(0, 0, 0);
   for (int i = 0; i < 3; i++) {
     Magnitude = Magnitude + pow(v1.v[i], 2);
   }
   Magnitude = sqrt(Magnitude);
-  result = v1 * (1 / Magnitude);
-  return result;
+  //result = v1 * (1 / Magnitude);
+  return Magnitude;
 }
 
 /*
@@ -199,10 +199,11 @@ sphere::sphere() {
   r2 = 0;
 }
 
-sphere::sphere(Vector3D cen, double rad, Array rgb) {
+sphere::sphere(Vector3D cen, double rad, Array rgb,double spec) {
   color = rgb;
   center = cen;
   radius = rad;
+  specular = spec;
   r2 = rad * rad;
 }
 
@@ -219,10 +220,12 @@ Camara::Camara(double pos[],double rot[][]){
         position = pos;
         rotation = rot;
     };
-
+*/
 Light::Light() {
   type = ' ';
   intensity = 0;
+  position = Array(0, 0, 0);
+  direction = Array(0, 0, 0);
 }
 Light::~Light() {}
 
@@ -231,17 +234,17 @@ Light::Light(string type, double intensity, Array direction, Array position) {
   intensity = intensity;
   direction = direction;
   position = position;
-}*/
+}
 
 Scene::Scene() {
   spheres[0] =
-      sphere(Vector3D(0, -1, 3), 1, Array(255, 0, 0));       //, 5000, 0.2);
-  spheres[1] = sphere(Vector3D(2, 0, 4), 1, Array(0, 0, 255)); //, 500, 0.3);
-  spheres[2] = sphere(Vector3D(-2, 0, 4), 1, Array(0, 255, 0)); //, 10, 0.4);
+      sphere(Vector3D(0, -1, 3), 1, Array(255, 0, 0), 5000);//, 0.2);
+  spheres[1] = sphere(Vector3D(2, 0, 4), 1, Array(0, 0, 255) , 500);//, 0.3);
+  spheres[2] = sphere(Vector3D(-2, 0, 4), 1, Array(0, 255, 0), 10);//, 0.4);
   spheres[3] =
-      sphere(Vector3D(0, -5001, 0), 5000, Array(255, 255, 0)); //, 1000, 0.5);
+      sphere(Vector3D(0, -5001, 0), 5000, Array(255, 255, 0), 1000);//, 0.5);
 
-  // Lights[0] = Light("ambient", 0.2, Array(0, 0, 0), Array(0, 0, 0));
-  // Lights[1] = Light("point", 0.6, Array(0, 0, 0), Array(2, 1, 0));
-  // Lights[2] = Light("direction", 0.2, Array(1, 4, 4), Array(0, 0, 0));
+   Lights[0] = Light("ambient", 0.2, Array(0, 0, 0), Array(0, 0, 0));
+   Lights[1] = Light("point", 0.6, Array(0, 0, 0), Array(2, 1, 0));
+   Lights[2] = Light("direction", 0.2, Array(1, 4, 4), Array(0, 0, 0));
 }

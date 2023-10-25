@@ -27,7 +27,7 @@ public:
 
   friend double dot(const Vector3D &vector1, const Vector3D &vector2);
 
-  friend Vector3D norm(Vector3D &v1);
+  friend double norm(Vector3D &v1);
 
   Vector3D operator+(const Vector3D &) const;
 
@@ -70,36 +70,36 @@ private:
 
 class sphere {
 public:
-  sphere(Vector3D cen, double rad, Array rgb); //, double sp, double refle);
+  sphere(Vector3D cen, double rad, Array rgb, double sp);//, double refle);
   sphere();
-
+  
   Vector3D center;
   double radius;
   Array color;
   double r2;
-  // double spec;
+   double specular;
   // double refl;
 };
 
-/*class Light {
+class Light {
 public:
   Light();
   ~Light();
   Light(string type, double intensity, Array direction, Array position);
 
-private:
+
   string type;
   double intensity;
-  Array position;
-  Array direction;
-};*/
+  Vector3D position;
+  Vector3D direction;
+};
 
 class Scene {
 public:
   Scene();
 
   sphere spheres[4];
-  // Light Lights[3];
+  Light Lights[3];
 };
 
 /*

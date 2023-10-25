@@ -10,26 +10,8 @@ int Vw = 1; // Viewport width
 int d = 1;  // Projection distance
 Scene scene;
 
-double IntersectRaySphere1(const Vector3D &O, const Vector3D &D,
-                           const sphere &s) {
-  double r = s.radius;
-  Vector3D CO = O - s.center;
 
-  double a = dot(D, D);
-  double b = 2 * dot(CO, D);
-  double c = dot(CO, CO) - (r * r);
-
-  double discriminant = (b * b) - (4 * a * c);
-  if (discriminant < 0) {
-    return INFINITY;
-  }
-
-  double t1 = (-b + sqrt(discriminant)) / (2 * a);
-
-  return t1;
-}
-
-double IntersectRaySphere2(const Vector3D &O, const Vector3D &D,
+pair<double,double> IntersectRaySphere(const Vector3D &O, const Vector3D &D,
                            const sphere &s) {
   double r = s.radius;
   Vector3D CO = O - s.center;
@@ -40,12 +22,37 @@ double IntersectRaySphere2(const Vector3D &O, const Vector3D &D,
 
   double discriminant = (b * b) - (4 * a * c);
   if (discriminant < 0) {
-    return INFINITY;
+    return make_pair(INFINITY,INFINITY);
   }
 
+  double t1 = (-b + sqrt(discriminant)) / (2 * a);
   double t2 = (-b - sqrt(discriminant)) / (2 * a);
 
-  return t2;
+  return make_pair(t1, t2);
+}
+
+double ComputeLighting(Vector3D P,double N) {
+    double i = 0.0;
+    Vector3D L;
+    for (const Light &light : scene.Lights) {
+        if (light.type == "ambient") {
+           i += light.intensity;
+        } 
+        else {
+            if (light.type == "point") {
+              L = light.position - P;
+            } 
+            else {
+               L = light.direction;
+            }
+
+            double n_dot_l = dot(N, L)
+           if n_dot_l > 0 {
+               ❺i += light.intensity * n_dot_l/(length(N) * length(L))
+            }
+        }
+    }
+    return i
 }
 
 double colorcheck(double color) {
@@ -65,11 +72,13 @@ Vector3D ReflectRay(const Vector3D &R, const Vector3D &N) {
 Array TraceRay(const Vector3D &O, const Vector3D &D, double t_min, double t_max,
                double rec_depth) {
   double closest_t = INFINITY;
-  sphere closest_sphere = sphere(Vector3D(0, 0, 0), 0, Array(0, 0, 0));
+  sphere closest_sphere = sphere(Vector3D(0, 0, 0), 0, Array(0, 0, 0),0);
+
 
   for (const sphere &sphere : scene.spheres) {
-    double t1 = IntersectRaySphere1(O, D, sphere);
-    double t2 = IntersectRaySphere2(O, D, sphere);
+     pair<double, double> T = IntersectRaySphere(O, D, sphere);
+    double t1 = T.first;
+    double t2 = T.second;
 
     if (t_min <= t1 && t1 <= t_max && t1 < closest_t) {
       closest_t = t1;
@@ -83,21 +92,21 @@ Array TraceRay(const Vector3D &O, const Vector3D &D, double t_min, double t_max,
   }
 
   if (closest_t == INFINITY) {
-    cout << "help\n";
+    
     return Array(255, 255, 255);
   }
-  /*
+  
   Vector3D P = O + D * closest_t;
-  Vector3D N = P - closest_sphere->center;
-  Vector3D N1 = norm(N);
+  Vector3D N = P - closest_sphere.center;
+  double N1 = norm(N);
 
-  double v1 = D.get_coord(0);
-  double v2 = D.get_coord(1);
-  double v3 = D.get_coord(2);
+  double v1 = D.get_X();
+  double v2 = D.get_Y();
+  double v3 = D.get_Z();
 
-  Vector3D neg_D(-(v1),-(v2),-(v3));*/
+  Vector3D neg_D((v1*-1),(v2*-1),(v3*-1));
 
-  // double i = ComputeLighting(P, N, neg_D, closest_sphere.spec);
+  double i = ComputeLighting(P, N, neg_D, closest_sphere.spec);
 
   int red = colorcheck(int(closest_sphere.color.getxyz(0)));
   int blue = colorcheck(int(closest_sphere.color.getxyz(2)));
@@ -113,7 +122,7 @@ Array TraceRay(const Vector3D &O, const Vector3D &D, double t_min, double t_max,
    Vector3D R = ReflectRay(neg_D, N);
    Array reflected_color = TraceRay(P, R, 0.001, INFINITY, rec_depth - 1);
   */
-  return closest_sphere.color; //* (1 - r) + reflected_color * r;
+  return local_color; //* (1 - r) + reflected_color * r;
 }
 
 Vector3D CanvasToViewport(double x, double y) {
