@@ -10,26 +10,8 @@ int Vw = 1; // Viewport width
 int d = 1;  // Projection distance
 Scene scene;
 
-double IntersectRaySphere1(const Vector3D &O, const Vector3D &D,
-                           const sphere &s) {
-  double r = s.radius;
-  Vector3D CO = O - s.center;
 
-  double a = dot(D, D);
-  double b = 2 * dot(CO, D);
-  double c = dot(CO, CO) - (r * r);
-
-  double discriminant = (b * b) - (4 * a * c);
-  if (discriminant < 0) {
-    return INFINITY;
-  }
-
-  double t1 = (-b + sqrt(discriminant)) / (2 * a);
-
-  return t1;
-}
-
-double IntersectRaySphere2(const Vector3D &O, const Vector3D &D,
+pair<double,double> IntersectRaySphere(const Vector3D &O, const Vector3D &D,
                            const sphere &s) {
   double r = s.radius;
   Vector3D CO = O - s.center;
@@ -40,12 +22,13 @@ double IntersectRaySphere2(const Vector3D &O, const Vector3D &D,
 
   double discriminant = (b * b) - (4 * a * c);
   if (discriminant < 0) {
-    return INFINITY;
+    return make_pair(INFINITY,INFINITY);
   }
 
+  double t1 = (-b + sqrt(discriminant)) / (2 * a);
   double t2 = (-b - sqrt(discriminant)) / (2 * a);
 
-  return t2;
+  return make_pair(t1, t2);
 }
 
 double colorcheck(double color) {
@@ -65,11 +48,13 @@ Vector3D ReflectRay(const Vector3D &R, const Vector3D &N) {
 Array TraceRay(const Vector3D &O, const Vector3D &D, double t_min, double t_max,
                double rec_depth) {
   double closest_t = INFINITY;
-  sphere closest_sphere = sphere(Vector3D(0, 0, 0), 0, Array(0, 0, 0));
+  sphere closest_sphere = sphere(Vector3D(0, 0, 0), 0, Array(0, 0, 0),0);
+
 
   for (const sphere &sphere : scene.spheres) {
-    double t1 = IntersectRaySphere1(O, D, sphere);
-    double t2 = IntersectRaySphere2(O, D, sphere);
+     pair<double, double> T = IntersectRaySphere(O, D, sphere);
+    double t1 = T.first;
+    double t2 = T.second;
 
     if (t_min <= t1 && t1 <= t_max && t1 < closest_t) {
       closest_t = t1;
