@@ -70,14 +70,14 @@ private:
 
 class sphere {
 public:
-  sphere(Vector3D cen, double rad, Array rgb); //, double sp, double refle);
+  sphere(Vector3D cen, double rad, Array rgb, double sp);//, double refle);
   sphere();
-
+  
   Vector3D center;
   double radius;
   Array color;
   double r2;
-  // double spec;
+   double specular;
   // double refl;
 };
 
