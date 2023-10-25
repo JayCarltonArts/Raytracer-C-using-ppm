@@ -85,13 +85,13 @@ class Light {
 public:
   Light();
   ~Light();
-  Light(string type, double intensity);//, Array direction, Array position);
+  Light(string type, double intensity, Array direction, Array position);
 
 
   string type;
   double intensity;
-  //Array position;
-  //Array direction;
+  Array position;
+  Array direction;
 };
 
 class Scene {

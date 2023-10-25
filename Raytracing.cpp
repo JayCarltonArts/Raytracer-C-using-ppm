@@ -224,14 +224,16 @@ Camara::Camara(double pos[],double rot[][]){
 Light::Light() {
   type = ' ';
   intensity = 0;
+  position = Array(0, 0, 0);
+  direction = Array(0, 0, 0);
 }
 Light::~Light() {}
 
-Light::Light(string type, double intensity) {//, Array direction, Array position) {
+Light::Light(string type, double intensity, Array direction, Array position) {
   type = type;
   intensity = intensity;
-  //direction = direction;
-  //position = position;
+  direction = direction;
+  position = position;
 }
 
 Scene::Scene() {
@@ -242,7 +244,7 @@ Scene::Scene() {
   spheres[3] =
       sphere(Vector3D(0, -5001, 0), 5000, Array(255, 255, 0), 1000);//, 0.5);
 
-   Lights[0] = Light("ambient", 0.2);//, Array(0, 0, 0), Array(0, 0, 0));
-   Lights[1] = Light("point", 0.6);//, Array(0, 0, 0), Array(2, 1, 0));
-   Lights[2] = Light("direction", 0.2);//, Array(1, 4, 4), Array(0, 0, 0));
+   Lights[0] = Light("ambient", 0.2, Array(0, 0, 0), Array(0, 0, 0));
+   Lights[1] = Light("point", 0.6, Array(0, 0, 0), Array(2, 1, 0));
+   Lights[2] = Light("direction", 0.2, Array(1, 4, 4), Array(0, 0, 0));
 }
