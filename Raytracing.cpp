@@ -86,15 +86,15 @@ Vector3D Vector3D::operator*(double const &v1) const {
   return result;
 }
 
-Vector3D norm(Vector3D &v1) {
+double norm(Vector3D &v1) {
   double Magnitude = 0;
   Vector3D result(0, 0, 0);
   for (int i = 0; i < 3; i++) {
     Magnitude = Magnitude + pow(v1.v[i], 2);
   }
   Magnitude = sqrt(Magnitude);
-  result = v1 * (1 / Magnitude);
-  return result;
+  //result = v1 * (1 / Magnitude);
+  return Magnitude;
 }
 
 /*

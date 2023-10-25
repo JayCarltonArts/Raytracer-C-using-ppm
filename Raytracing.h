@@ -27,7 +27,7 @@ public:
 
   friend double dot(const Vector3D &vector1, const Vector3D &vector2);
 
-  friend Vector3D norm(Vector3D &v1);
+  friend double norm(Vector3D &v1);
 
   Vector3D operator+(const Vector3D &) const;
 

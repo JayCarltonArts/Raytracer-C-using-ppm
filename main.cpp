@@ -83,7 +83,7 @@ Array TraceRay(const Vector3D &O, const Vector3D &D, double t_min, double t_max,
   }
 
   if (closest_t == INFINITY) {
-    cout << "help\n";
+    
     return Array(255, 255, 255);
   }
   /*
