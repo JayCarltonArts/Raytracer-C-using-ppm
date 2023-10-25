@@ -99,7 +99,7 @@ public:
   Scene();
 
   sphere spheres[4];
-  // Light Lights[3];
+  Light Lights[3];
 };
 
 /*
