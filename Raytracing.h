@@ -90,8 +90,8 @@ public:
 
   string type;
   double intensity;
-  Array position;
-  Array direction;
+  Vector3D position;
+  Vector3D direction;
 };
 
 class Scene {
