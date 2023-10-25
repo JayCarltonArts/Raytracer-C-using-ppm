@@ -220,7 +220,7 @@ Camara::Camara(double pos[],double rot[][]){
         position = pos;
         rotation = rot;
     };
-
+*/
 Light::Light() {
   type = ' ';
   intensity = 0;
@@ -232,7 +232,7 @@ Light::Light(string type, double intensity, Array direction, Array position) {
   intensity = intensity;
   direction = direction;
   position = position;
-}*/
+}
 
 Scene::Scene() {
   spheres[0] =

@@ -81,18 +81,18 @@ public:
   // double refl;
 };
 
-/*class Light {
+class Light {
 public:
   Light();
   ~Light();
   Light(string type, double intensity, Array direction, Array position);
 
-private:
+
   string type;
   double intensity;
   Array position;
   Array direction;
-};*/
+};
 
 class Scene {
 public:
