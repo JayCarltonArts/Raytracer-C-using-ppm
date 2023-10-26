@@ -139,7 +139,7 @@ Array TraceRay(const Vector3D &O, const Vector3D &D, double t_min, double t_max,
 
   if (closest_t == INFINITY) {
     
-    return Array(130, 200, 255);
+    return Array(10, 200, 255);
   }
   
   Vector3D P = O + (D * closest_t);
