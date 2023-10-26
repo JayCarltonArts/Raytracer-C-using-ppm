@@ -57,6 +57,7 @@ public:
   Array(int r, int g, int b);
   Array operator*(double const &v1);
   Array operator+(double const &v1);
+  Array operator+(Array const &v1);
   
   int getxyz(int in) const;
 
@@ -71,7 +72,7 @@ private:
 
 class sphere {
 public:
-  sphere(Vector3D cen, double rad, Array rgb, double sp);//, double refle);
+  sphere(Vector3D cen, double rad, Array rgb, double sp, double refle);
   sphere();
   
   Vector3D center;
@@ -79,7 +80,7 @@ public:
   Array color;
   double r2;
   double specular;
-  // double refl;
+  double reflective;
 };
 
 class Light {

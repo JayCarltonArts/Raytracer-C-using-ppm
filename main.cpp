@@ -33,7 +33,7 @@ pair<double,double> IntersectRaySphere(const Vector3D &O, const Vector3D &D,
 
 bool ClosestshadowIntersection(Vector3D O, Vector3D D, double t_min,double t_max){
   double closest_t = INFINITY;
-  sphere closest_sphere = sphere(Vector3D(0, 0, 0), 0, Array(0, 0, 0),0);
+  sphere closest_sphere = sphere(Vector3D(0, 0, 0), 0, Array(0, 0, 0),0,0);
 
 
   for (const sphere &sphere : scene.spheres) {
@@ -108,7 +108,7 @@ Vector3D ReflectRay(const Vector3D &R, const Vector3D &N) {
 
 pair<sphere,double>ClosestIntersection(Vector3D O, Vector3D D, double t_min,double t_max){
   double closest_t = INFINITY;
-  sphere closest_sphere = sphere(Vector3D(0, 0, 0), 0, Array(0, 0, 0),0);
+  sphere closest_sphere = sphere(Vector3D(0, 0, 0), 0, Array(0, 0, 0),0,0);
 
 
   for (const sphere &sphere : scene.spheres) {
@@ -139,7 +139,7 @@ Array TraceRay(const Vector3D &O, const Vector3D &D, double t_min, double t_max,
 
   if (closest_t == INFINITY) {
     
-    return Array(255, 255, 255);
+    return Array(130, 200, 255);
   }
   
   Vector3D P = O + (D * closest_t);
@@ -160,7 +160,7 @@ Array TraceRay(const Vector3D &O, const Vector3D &D, double t_min, double t_max,
   int green = colorcheck(int(closest_sphere.color.getxyz(1))*i);
   Array local_color(red, green, blue);
 
-  /*double r = closest_sphere->refl;
+  double r = closest_sphere.reflective;
 
   if (rec_depth <= 0 || r <= 0) {
       return local_color;
@@ -168,8 +168,8 @@ Array TraceRay(const Vector3D &O, const Vector3D &D, double t_min, double t_max,
 
    Vector3D R = ReflectRay(neg_D, N);
    Array reflected_color = TraceRay(P, R, 0.001, INFINITY, rec_depth - 1);
-  */
-  return local_color; //* (1 - r) + reflected_color * r;
+  
+  return local_color * (1 - r) + reflected_color * r;
 }
 
 Vector3D CanvasToViewport(double x, double y) {

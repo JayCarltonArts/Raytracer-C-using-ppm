@@ -183,7 +183,15 @@ Array Array::operator+(double const &v1) {
   return result;
 }
 
+Array Array::operator+(Array const &v1) {
+  Array result;
 
+  result.x = x + v1.x;
+  result.y = y + v1.y;
+  result.z = z + v1.z;
+
+  return result;
+}
 
 int Array::getxyz(int in) const {
   if (in == 0) {
@@ -208,11 +216,12 @@ sphere::sphere() {
   color = Array(0,0,0);
 }
 
-sphere::sphere(Vector3D cen, double rad, Array rgb, double sp){
+sphere::sphere(Vector3D cen, double rad, Array rgb, double sp, double refle){
   color = rgb;
   center = cen;
   radius = rad;
   specular = sp;
+  reflective = refle;
   r2 = rad*rad;
 }
 
@@ -245,10 +254,10 @@ Light::Light(string ty, double inte, Vector3D direc, Vector3D pos) {
   position = pos;
 }
 Scene::Scene() {
-  spheres[0] = sphere(Vector3D(0, -1, 3), 1, Array(255, 0, 0), 500);//, 0.2);
-  spheres[1] = sphere(Vector3D(2, 0, 4), 1, Array(0, 0, 255), 50);//, 0.3);
-  spheres[2] = sphere(Vector3D(-2, 0, 4), 1, Array(0, 255, 0), 10);//, 0.4);
-  spheres[3] = sphere(Vector3D(0, -5001, 0), 5000, Array(255, 255, 0), 1000);//, 0.5);
+  spheres[0] = sphere(Vector3D(0, -1, 3), 1, Array(255, 0, 0), 500, 0.2);
+  spheres[1] = sphere(Vector3D(2, 0, 4), 1, Array(0, 0, 255), 50, 0.3);
+  spheres[2] = sphere(Vector3D(-2, 0, 4), 1, Array(0, 255, 0), 10, 0.4);
+  spheres[3] = sphere(Vector3D(0, -5001, 0), 5000, Array(255, 255, 0), 1000, 0.5);
 
   Lights[0] = Light("ambient", 0.2, Vector3D(0, 0, 0), Vector3D(0, 0, 0));
   Lights[1] = Light("point", 0.6, Vector3D(0, 0, 0), Vector3D(2, 1, 0));
