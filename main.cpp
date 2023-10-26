@@ -31,10 +31,29 @@ pair<double,double> IntersectRaySphere(const Vector3D &O, const Vector3D &D,
   return make_pair(t1, t2);
 }
 
+bool ClosestshadowIntersection(Vector3D O, Vector3D D, double t_min,double t_max){
+  double closest_t = INFINITY;
+  sphere closest_sphere = sphere(Vector3D(0, 0, 0), 0, Array(0, 0, 0),0);
+
+
+  for (const sphere &sphere : scene.spheres) {
+     pair<double, double> T = IntersectRaySphere(O, D, sphere);
+    double t1 = T.first;
+    double t2 = T.second;
+
+    if ((t_min <= t1 && t1 <= t_max && t1 < closest_t)||(t_min <= t2 && t2 <= t_max && t2 < closest_t)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+
 double ComputeLighting(Vector3D P,Vector3D N, Vector3D V,double s) {
     double i = 0.0;
     Vector3D L;
     Vector3D R;
+    double t_max;
     for (const Light &light : scene.Lights) {
       
         if (light.type == "ambient") {
@@ -43,9 +62,15 @@ double ComputeLighting(Vector3D P,Vector3D N, Vector3D V,double s) {
         else {
             if (light.type == "point") {
               L = light.position - P;
+              t_max = 1;
             } 
             else {
                L = light.direction;
+               t_max = INFINITY;
+            }
+            //Shadow check
+            if (ClosestshadowIntersection(P,L,0.001,t_max)){
+                continue;
             }
 
           double n_dot_l = dot(N, L);
@@ -81,8 +106,7 @@ Vector3D ReflectRay(const Vector3D &R, const Vector3D &N) {
   return N * 2.0 * dotProduct - R;
 }
 
-Array TraceRay(const Vector3D &O, const Vector3D &D, double t_min, double t_max,
-               double rec_depth) {
+pair<sphere,double>ClosestIntersection(Vector3D O, Vector3D D, double t_min,double t_max){
   double closest_t = INFINITY;
   sphere closest_sphere = sphere(Vector3D(0, 0, 0), 0, Array(0, 0, 0),0);
 
@@ -102,6 +126,16 @@ Array TraceRay(const Vector3D &O, const Vector3D &D, double t_min, double t_max,
       closest_sphere = sphere;
     }
   }
+  return make_pair(closest_sphere,closest_t);
+}
+
+
+
+Array TraceRay(const Vector3D &O, const Vector3D &D, double t_min, double t_max,
+               double rec_depth) {
+  pair<sphere,double> close = ClosestIntersection(O,D,t_min,t_max);
+  sphere closest_sphere = close.first;
+  double closest_t = close.second;
 
   if (closest_t == INFINITY) {
     
@@ -154,7 +188,7 @@ int main() {
 
   if (image.is_open()) {
     image << "P3" << endl;
-    image << "300 300" << endl;
+    image << to_string(Cw)<<" "<<to_string(Ch) << endl;
     image << "255" << endl;
     for (int y = Ch / 2; y > -Ch / 2; --y) {
       for (int x = -Cw / 2; x < Cw / 2; ++x) {
