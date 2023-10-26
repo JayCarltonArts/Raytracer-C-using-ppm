@@ -27,7 +27,7 @@ public:
 
   friend double dot(const Vector3D &vector1, const Vector3D &vector2);
 
-  friend double norm(Vector3D &v1);
+  friend double norm(const Vector3D &v1);
 
   Vector3D operator+(const Vector3D &) const;
 
@@ -35,13 +35,13 @@ public:
 
   // Vector3D operator-(int const &v1);
 
-  // friend ostream &operator<<(ostream &out, const Vector3D &ar);
+   friend ostream &operator<<(ostream &out, const Vector3D &ar);
 
   // Overloading the multiplication operator to multiply vectors with a scalar
   Vector3D operator*(double const &v1) const;
   Vector3D operator*(double const &v1);
 
-  // Vector3D operator*(int const &);
+  
 
   // Function to calculate the dot product of two vectors
 
@@ -57,6 +57,7 @@ public:
   Array(int r, int g, int b);
   Array operator*(double const &v1);
   Array operator+(double const &v1);
+  
   int getxyz(int in) const;
 
 private:
@@ -77,7 +78,7 @@ public:
   double radius;
   Array color;
   double r2;
-   double specular;
+  double specular;
   // double refl;
 };
 
@@ -85,7 +86,7 @@ class Light {
 public:
   Light();
   ~Light();
-  Light(string type, double intensity, Array direction, Array position);
+  Light(string type, double intensity, Vector3D direction, Vector3D position);
 
 
   string type;
