@@ -31,10 +31,12 @@ pair<double,double> IntersectRaySphere(const Vector3D &O, const Vector3D &D,
   return make_pair(t1, t2);
 }
 
-double ComputeLighting(Vector3D P,double N) {
+double ComputeLighting(Vector3D P,Vector3D N, Vector3D V,double s) {
     double i = 0.0;
     Vector3D L;
+    Vector3D R;
     for (const Light &light : scene.Lights) {
+      
         if (light.type == "ambient") {
            i += light.intensity;
         } 
@@ -46,19 +48,29 @@ double ComputeLighting(Vector3D P,double N) {
                L = light.direction;
             }
 
-            double n_dot_l = dot(N, L)
-           if n_dot_l > 0 {
-               ❺i += light.intensity * n_dot_l/(length(N) * length(L))
+          double n_dot_l = dot(N, L);
+           if (n_dot_l > 0 ){
+               i += light.intensity * n_dot_l/(norm(N) * norm(L));
             }
+           // Specular
+          if (s != -1) {
+            
+              R = (N * 2.0) * dot(N, L) - L;
+              double r_dot_v = dot(R, V);
+              if (r_dot_v > 0) {
+                i += light.intensity * pow(r_dot_v/(norm(R) * norm(V)), s);
+              }
+        }
         }
     }
-    return i
+    
+    return i;
 }
 
 double colorcheck(double color) {
-  if (color > 255) {
+  if (color >= 255) {
     color = 255;
-  } else if (color < 0) {
+  } else if (color <= 0) {
     color = 0;
   }
   return color;
@@ -96,21 +108,22 @@ Array TraceRay(const Vector3D &O, const Vector3D &D, double t_min, double t_max,
     return Array(255, 255, 255);
   }
   
-  Vector3D P = O + D * closest_t;
+  Vector3D P = O + (D * closest_t);
   Vector3D N = P - closest_sphere.center;
-  double N1 = norm(N);
-
-  double v1 = D.get_X();
-  double v2 = D.get_Y();
-  double v3 = D.get_Z();
+  N = N * (1/norm(N));
+ 
+  double v1 = D.getX();
+  double v2 = D.getY();
+  double v3 = D.getZ();
 
   Vector3D neg_D((v1*-1),(v2*-1),(v3*-1));
 
-  double i = ComputeLighting(P, N, neg_D, closest_sphere.spec);
+  
+  double i = ComputeLighting(P, N, neg_D, closest_sphere.specular);
 
-  int red = colorcheck(int(closest_sphere.color.getxyz(0)));
-  int blue = colorcheck(int(closest_sphere.color.getxyz(2)));
-  int green = colorcheck(int(closest_sphere.color.getxyz(1)));
+  int red = colorcheck(int(closest_sphere.color.getxyz(0) *i));
+  int blue = colorcheck(int(closest_sphere.color.getxyz(2)*i));
+  int green = colorcheck(int(closest_sphere.color.getxyz(1))*i);
   Array local_color(red, green, blue);
 
   /*double r = closest_sphere->refl;
