@@ -3,8 +3,8 @@
 using namespace std;
 
 double BACKGROUND_COLOR[3] = {255, 255, 255};
-int Ch = 300;
-int Cw = 300;
+int Ch = 500;
+int Cw = 500;
 int Vh = 1; // Viewport height
 int Vw = 1; // Viewport width
 int d = 1;  // Projection distance

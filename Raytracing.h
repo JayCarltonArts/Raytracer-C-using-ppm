@@ -96,6 +96,8 @@ public:
   Vector3D direction;
 };
 
+
+
 class Scene {
 public:
   Scene();
